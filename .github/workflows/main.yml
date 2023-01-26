@@ -46,12 +46,14 @@ jobs:
       if: endsWith(github.ref, 'main')
       run: echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
-    - name: Downcase REPOSITORY
-      run: |
-        echo "REPOSITORY=ghcr.io/${{ github.repository,, }}" >> ${GITHUB_ENV}
+    - id: repo
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ghcr.io/${{ github.repository }}
 
     - name: Push to GitHub Container Registry
       run: |
         echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        export REPOSITORY=${{ steps.repo.outputs.lowercase }}
         docker tag express-starter:${{ env.ENVIRONMENT }} ${REPOSITORY}:${{ env.ENVIRONMENT }}
         docker push ${REPOSITORY}:${{ env.ENVIRONMENT }}
