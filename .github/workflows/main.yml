@@ -14,9 +14,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set environment
-      env:
-        ENVIRONMENT: ${{ if: eq(github.ref, 'refs/heads/develop'), then: 'development', else if: eq(github.ref, 'refs/heads/release'), then: 'staging', else: 'production' }}
+    - name: Set development environment
+      if: endsWith(github.ref, 'develop')
+      run: echo "ENVIRONMENT=development" >> $GITHUB_ENV
+    - name: Set staging environment
+      if: endsWith(github.ref, 'release')
+      run: echo "ENVIRONMENT=staging" >> $GITHUB_ENV
+    - name: Set production environment
+      if: endsWith(github.ref, 'main')
+      run: echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
     - name: Retrieve Secrets
       run: |
