@@ -40,5 +40,5 @@ jobs:
       run: |
         echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
         export REPOSITORY=ghcr.io/${{ github.repository }}
-        docker tag express-starter-${{ env.ENVIRONMENT }} ${REPOSITORY}:${{ env.ENVIRONMENT }}
+        docker tag express-starter-${{ env.ENVIRONMENT }}:latest ${REPOSITORY}:${{ env.ENVIRONMENT }}
         docker push ${REPOSITORY}:${{ env.ENVIRONMENT }}
