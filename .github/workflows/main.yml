@@ -47,9 +47,9 @@ jobs:
       run: echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
     - id: repo
-        uses: ASzc/change-string-case-action@v5
-        with:
-          string: ghcr.io/${{ github.repository }}
+      uses: ASzc/change-string-case-action@v5
+      with:
+        string: ghcr.io/${{ github.repository }}
 
     - name: Push to GitHub Container Registry
       run: |
