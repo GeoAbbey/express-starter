@@ -30,7 +30,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t express=starter:${{ env.ENVIRONMENT }} .
+        docker build -t express-starter:${{ env.ENVIRONMENT }} .
   
   deploy:
     runs-on: ubuntu-latest
