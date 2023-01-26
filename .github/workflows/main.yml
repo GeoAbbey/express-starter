@@ -47,8 +47,8 @@ jobs:
       run: echo "ENVIRONMENT=production" >> $GITHUB_ENV
 
     - name: Downcase REPOSITORY
-        run: |
-          echo "REPOSITORY=ghcr.io/${{ github.repository }}" >>${GITHUB_ENV}
+      run: |
+        echo "REPOSITORY=ghcr.io/${{ github.repository }}" >>${GITHUB_ENV}
 
     - name: Push to GitHub Container Registry
       run: |
