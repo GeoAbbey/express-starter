@@ -48,7 +48,7 @@ jobs:
 
     - name: Downcase REPOSITORY
       run: |
-        echo "REPOSITORY=ghcr.io/${{ github.repository }}" >>${GITHUB_ENV}
+        echo "REPOSITORY=ghcr.io/${{ github.repository,, }}" >> ${GITHUB_ENV}
 
     - name: Push to GitHub Container Registry
       run: |
