@@ -30,7 +30,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build --file=${GITHUB_WORKSPACE}/secret-${{ env.ENVIRONMENT }}.env -t aptresponse:${{ env.ENVIRONMENT }} .
+        docker build --file ${GITHUB_WORKSPACE}/secret-${{ env.ENVIRONMENT }}.env -t aptresponse:${{ env.ENVIRONMENT }} .
   
   deploy:
     runs-on: ubuntu-latest
