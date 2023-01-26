@@ -16,13 +16,13 @@ jobs:
 
     - name: Set environment
       run: |
-        echo "::set-env name=ENVIRONMENT::${{ if eq(github.ref, 'refs/heads/develop') }}development${{ else if eq(github.ref, 'refs/heads/release') }}staging${{ else if eq(github.ref, 'refs/heads/main') }}production${{ endif }}"
+        echo "::set-env name=ENVIRONMENT::${{ if: eq(github.ref, 'refs/heads/develop'), then: 'development', else if: eq(github.ref, 'refs/heads/release'), then: 'staging', else: 'production' }}"
 
     - name: Retrieve Secrets
       env:
         ENVIRONMENT: ${{ env.ENVIRONMENT }}
       run: |
-        echo "${{ secrets.${ENVIRONMENT}_SECRET }}" > ${GITHUB_WORKSPACE}/secret-${{ env.ENVIRONMENT }}.env
+        echo "${{ secrets.{{ env.ENVIRONMENT }}_SECRET }}" > ${GITHUB_WORKSPACE}/secret-${{ env.ENVIRONMENT }}.env
 
     - name: Build Docker image
       run: |
