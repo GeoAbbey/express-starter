@@ -8,8 +8,10 @@ on:
       - main
 
 jobs:
-  set-env:
+  set_env:
     runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.setEnv.outputs.ENVIRONMENT }}
     steps:
     - name: Set development environment
       if: endsWith(github.ref, 'develop')
@@ -20,18 +22,20 @@ jobs:
     - name: Set production environment
       if: endsWith(github.ref, 'main')
       run: echo "ENVIRONMENT=production" >> $GITHUB_ENV
+    - id: setEnv
+        run: echo "ENVIRONMENT=${{ env.ENVIRONMENT }}" >> $GITHUB_OUTPUT
 
   build-and-deploy:
     runs-on: ubuntu-latest
-    needs: set-env
-    env: {ENVIRONMENT: ${{ env.ENVIRONMENT }}}
+    needs: set_env
+    environment: ${{needs.set_env.outputs.environment}}
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Build Docker image
       run: |
-        docker build -t express-starter-${{ env.ENVIRONMENT }}:latest .
+        docker build -t express-starter-${{needs.set_env.outputs.environment}}:latest .
 
     - id: repo
       uses: ASzc/change-string-case-action@v5
@@ -42,8 +46,8 @@ jobs:
       run: |
         echo "${{ secrets.GIT_DOCKER_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
         export REPOSITORY=${{ steps.repo.outputs.lowercase }}
-        docker tag express-starter-${{ env.ENVIRONMENT }}:latest ${REPOSITORY}-${{ env.ENVIRONMENT }}:latest
-        docker push ${REPOSITORY}-${{ env.ENVIRONMENT }}:latest
+        docker tag express-starter-${{needs.set_env.outputs.environment}}:latest ${REPOSITORY}-${{needs.set_env.outputs.environment}}:latest
+        docker push ${REPOSITORY}-${{needs.set_env.outputs.environment}}:latest
 
     - name: Login to AWS
       uses: aws-actions/configure-aws-credentials@v1
