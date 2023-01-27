@@ -39,3 +39,14 @@ jobs:
         export REPOSITORY=${{ steps.repo.outputs.lowercase }}
         docker tag express-starter-${{ env.ENVIRONMENT }}:latest ${REPOSITORY}-${{ env.ENVIRONMENT }}:latest
         docker push ${REPOSITORY}-${{ env.ENVIRONMENT }}:latest
+
+    - name: Login to AWS
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: AKIAR3RLZJKGICRS6Q2X
+        aws-secret-access-key: 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
+        aws-region: eu-west-2
+    
+    - name: Refresh ECS service
+      run: |
+        aws ecs update-service --cluster ExpressProduction --service express-prod-2 --force-new-deployment --region eu-west-2
