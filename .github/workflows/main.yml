@@ -38,4 +38,4 @@ jobs:
         echo "${{ secrets.GIT_DOCKER_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
         export REPOSITORY=${{ steps.repo.outputs.lowercase }}
         docker tag express-starter-${{ env.ENVIRONMENT }}:latest ${REPOSITORY}-${{ env.ENVIRONMENT }}:latest
-        docker push ${REPOSITORY}:${{ env.ENVIRONMENT }}
+        docker push ${REPOSITORY}-${{ env.ENVIRONMENT }}:latest
