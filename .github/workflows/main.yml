@@ -11,7 +11,7 @@ jobs:
   set_env:
     runs-on: ubuntu-latest
     outputs:
-      environment: ${{ steps.setEnv.outputs.ENVIRONMENT }}
+      environment: ${{ steps.setEnvironment.outputs.ENVIRONMENT }}
     steps:
     - name: Set development environment
       if: endsWith(github.ref, 'develop')
@@ -22,7 +22,7 @@ jobs:
     - name: Set production environment
       if: endsWith(github.ref, 'main')
       run: echo "ENVIRONMENT=production" >> $GITHUB_ENV
-    - id: setEnv
+    - id: setEnvironment
       run: echo "ENVIRONMENT=${{ env.ENVIRONMENT }}" >> $GITHUB_OUTPUT
 
   build-and-deploy:
@@ -35,7 +35,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t express-starter-${{needs.set_env.outputs.environment}}:latest .
+        docker build -t express-starter:${{needs.set_env.outputs.environment}} .
 
     - id: repo
       uses: ASzc/change-string-case-action@v5
@@ -46,11 +46,11 @@ jobs:
       run: |
         echo "${{ secrets.GIT_DOCKER_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
         export REPOSITORY=${{ steps.repo.outputs.lowercase }}
-        docker tag express-starter-${{needs.set_env.outputs.environment}}:latest ${REPOSITORY}-${{needs.set_env.outputs.environment}}:latest
-        docker push ${REPOSITORY}-${{needs.set_env.outputs.environment}}:latest
+        docker tag express-starter:${{needs.set_env.outputs.environment}} ${REPOSITORY}:${{needs.set_env.outputs.environment}}
+        docker push ${REPOSITORY}:${{needs.set_env.outputs.environment}}
 
     - name: Login to AWS
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
