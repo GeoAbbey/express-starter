@@ -23,7 +23,7 @@ jobs:
       if: endsWith(github.ref, 'main')
       run: echo "ENVIRONMENT=production" >> $GITHUB_ENV
     - id: setEnv
-        run: echo "ENVIRONMENT=${{ env.ENVIRONMENT }}" >> $GITHUB_OUTPUT
+      run: echo "ENVIRONMENT=${{ env.ENVIRONMENT }}" >> $GITHUB_OUTPUT
 
   build-and-deploy:
     runs-on: ubuntu-latest
